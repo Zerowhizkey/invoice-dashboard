@@ -1,25 +1,38 @@
-import { createContext, useState, useContext } from "react";
-
+import { createContext, useState, useContext, useEffect } from "react";
+import { v4 as uuid } from "uuid";
+import { fetchData, isUser } from "@/api/index";
 const InvoiceContex = createContext<InvoiceContext | null>(null);
 
 export const InvoiceProvider = ({ children }: ProviderProps) => {
-	const [wishes, setWishes] = useState<Wish[]>([]);
+	const [users, setUsers] = useState<User[]>([]);
 
-	const addWish: InvoiceContext["addWish"] = (text) => {
-		setWishes((prev) => {
-			return [
-				...prev,
-				{
-					id: prev.length + 1,
-					text,
-				},
-			];
-		});
-		return wishes;
-	};
+	useEffect(() => {
+		fetchData(`https://silk-sapphire-houseboat.glitch.me/users`).then(
+			(data) => {
+				if (isUser(data)) {
+					console.log(data);
+					setUsers(data.users);
+				}
+			}
+		);
+	}, []);
+	console.log(users);
+
+	// const addUser: InvoiceContext["addUser"] = (text) => {
+	// 	setUsers((prev) => {
+	// 		return [
+	// 			...prev,
+	// 			{
+	// 				id: uuid(),
+	// 				text,
+	// 			},
+	// 		];
+	// 	});
+	// 	return users;
+	// };
 
 	return (
-		<InvoiceContex.Provider value={{ wishes, addWish }}>
+		<InvoiceContex.Provider value={{ users }}>
 			{children}
 		</InvoiceContex.Provider>
 	);

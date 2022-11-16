@@ -5,3 +5,6 @@ export const fetchData = async (path: string): Promise<unknown> => {
 	console.log(data);
 	return data;
 };
+export const isUser = (data: any): data is InvoiceContext => {
+	return "users" in data;
+};

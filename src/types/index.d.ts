@@ -1,12 +1,12 @@
 interface ProviderProps {
 	children?: React.ReactNode;
 }
-type Wish = {
-	id: number;
+type User = {
+	id: string;
 	text: string;
 };
 
 interface InvoiceContext {
-	wishes: Wish[];
-	addWish: (text: string) => void;
+	users: User[];
+	// addUser: (text: string) => void;
 }
