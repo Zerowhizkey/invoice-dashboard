@@ -1,11 +1,17 @@
-import React from 'react'
+import { useInvoice } from '@/contexts/Index';
 
-type Props = {}
+const Timelogs = () => {
+    const { timelogs } = useInvoice();
+    return (
+        <div>
+            <h4>Timelogs</h4>
+            <div>
+                {timelogs.map((time) => (
+                    <p key={time.id}>{time.id}</p>
+                ))}
+            </div>
+        </div>
+    );
+};
 
-const Timelogs = (props: Props) => {
-  return (
-    <div>Timelogs</div>
-  )
-}
-
-export default Timelogs
+export default Timelogs;

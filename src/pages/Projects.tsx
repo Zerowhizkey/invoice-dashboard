@@ -1,11 +1,18 @@
-import React from 'react'
+import { useInvoice } from '@/contexts/Index';
 
-type Props = {}
+const Projects = () => {
+    const { projects } = useInvoice();
 
-const Projects = (props: Props) => {
-  return (
-    <div>Projects</div>
-  )
-}
+    return (
+        <div>
+            <h4>Projects</h4>
+            <div>
+                {projects.map((project) => (
+                    <p key={project.id}>{project.name}</p>
+                ))}
+            </div>
+        </div>
+    );
+};
 
-export default Projects
+export default Projects;

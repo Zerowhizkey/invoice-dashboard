@@ -1,13 +1,13 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 
-import { InvoiceProvider } from "@/contexts/Index";
+import { InvoiceProvider } from '@/contexts/Index';
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-	<React.StrictMode>
-		<InvoiceProvider>
-			<App />
-		</InvoiceProvider>
-	</React.StrictMode>
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <React.StrictMode>
+        <InvoiceProvider>
+            <App />
+        </InvoiceProvider>
+    </React.StrictMode>
 );
