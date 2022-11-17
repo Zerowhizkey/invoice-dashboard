@@ -13,52 +13,51 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [timelogs, setTimelogs] = useState<Timelog[]>([]);
+    const [loading, setLoading] = useState(true);
+
+
+    
+    const initialLoad = async () => {
+        setLoading(true);
+        try {
+            const users = await fetchData(
+                `https://silk-sapphire-houseboat.glitch.me/users`
+            );
+            const projects = await fetchData(
+                `https://silk-sapphire-houseboat.glitch.me/projects`
+            );
+            const tasks = await fetchData(
+                `https://silk-sapphire-houseboat.glitch.me/tasks`
+            );
+            const timelogs = await fetchData(
+                `https://silk-sapphire-houseboat.glitch.me/timelogs`
+            );
+            if (isUserArray(users)) {
+                setUsers(users);
+            }
+            if (isProjectArray(projects)) {
+                setProjects(projects);
+            }
+            if (isTaskArray(tasks)) {
+                setTasks(tasks);
+            }
+            if (isTimeArray(timelogs)) {
+                setTimelogs(timelogs);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        setLoading(false);
+    };
 
     useEffect(() => {
-        fetchData(`https://silk-sapphire-houseboat.glitch.me/users`).then(
-            (data) => {
-                console.log(data);
-                if (isUserArray(data)) {
-                    setUsers(data);
-                }
-            }
-        );
+        initialLoad();
     }, []);
 
-    useEffect(() => {
-        fetchData(`https://silk-sapphire-houseboat.glitch.me/projects`).then(
-            (data) => {
-                console.log(data);
-                if (isProjectArray(data)) {
-                    setProjects(data);
-                }
-            }
-        );
-    }, []);
-
-    useEffect(() => {
-        fetchData(`https://silk-sapphire-houseboat.glitch.me/tasks`).then(
-            (data) => {
-                console.log(data);
-                if (isTaskArray(data)) {
-                    setTasks(data);
-                }
-            }
-        );
-    }, []);
-
-    useEffect(() => {
-        fetchData(`https://silk-sapphire-houseboat.glitch.me/timelogs`).then(
-            (data) => {
-                console.log(data);
-                if (isTimeArray(data)) {
-                    setTimelogs(data);
-                }
-            }
-        );
-    }, []);
     return (
-        <InvoiceContex.Provider value={{ users, projects, tasks, timelogs }}>
+        <InvoiceContex.Provider
+            value={{ users, projects, tasks, timelogs, loading }}
+        >
             {children}
         </InvoiceContex.Provider>
     );

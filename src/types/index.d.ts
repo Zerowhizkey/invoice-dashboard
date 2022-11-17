@@ -6,6 +6,7 @@ interface InvoiceContext {
     projects: Project[];
     tasks: Task[];
     timelogs: Timelog[];
+    loading: boolean;
 }
 
 type User = {

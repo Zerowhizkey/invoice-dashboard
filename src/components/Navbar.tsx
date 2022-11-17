@@ -17,7 +17,7 @@ const Navbar = () => {
     };
 
     return (
-        <div className="nav-container">
+        <div className='nav-container'>
             <h3>PIRIUS</h3>
             <div>
                 <li>
