@@ -29,13 +29,20 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
         setLoading(false);
     };
 
+    const deleteTimelog = async (id: string) => {
+        const deleted = await api.timelogs.delete(id);
+        if (!deleted) return;
+        await api.timelogs.list().then((timelog) => {
+            setTimelogs(timelog);
+        });
+    };
     useEffect(() => {
         initialLoad();
     }, []);
 
     return (
         <InvoiceContex.Provider
-            value={{ users, projects, tasks, timelogs, loading }}
+            value={{ users, projects, tasks, timelogs, loading, deleteTimelog }}
         >
             {children}
         </InvoiceContex.Provider>

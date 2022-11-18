@@ -7,6 +7,7 @@ interface InvoiceContext {
     tasks: Task[];
     timelogs: Timelog[];
     loading: boolean;
+    deleteTimelog: (id: id) => void;
 }
 
 type User = {
