@@ -3,20 +3,3 @@ body {
     padding: 0;
 }
 
-.root-container {
-    display: flex;
-    flex-direction: row;
-}
-
-.nav-container {
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid black;
-    padding-right: 10px;
-    height: 100vh;
-}
-
-.page-container {
-    display: grid;
-    text-align: center;
-}

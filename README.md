@@ -40,8 +40,8 @@
 
 - Se en lista på tidtagningar de senaste 30 dagarna ()
 - Se en lista på alla tidtagningar ()
-- Se en lista på projekt ()
-- Se en lista på tasks ()
+- Se en lista på projekt (x)
+- Se en lista på tasks (x)
 - Ta bort en tidtagning ()
 - Ta bort en task ()
 - Ta bort ett projekt ()
