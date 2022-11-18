@@ -1,16 +1,50 @@
+import { Table, Select } from '@mantine/core';
 import { useInvoice } from '@/contexts/Index';
+import { useMemo, useState } from 'react';
+function Tasks() {
+    const { projects, tasks } = useInvoice();
+    const [selectedProject, setSelectedProject] = useState('');
 
-const Tasks = () => {
-    const { tasks } = useInvoice();
+    const projectsArray = useMemo(() => {
+        return projects.map(({ id, name }) => ({
+            value: id,
+            label: name,
+        }));
+    }, [projects]);
+
+    const rows = tasks
+        .filter((tasks) => tasks.projectId === selectedProject)
+        .map((task) => (
+            <tr key={task.id}>
+                <td>{task.title}</td>
+                <td>{task.userId}</td>
+            </tr>
+        ));
+
     return (
-        <div>
-            <h4>Tasks</h4>
-            <div>
-                {tasks &&
-                    tasks.map((task) => <p key={task.id}>{task.title}</p>)}
-            </div>
-        </div>
+        <>
+            <Select
+                clearable
+                label='Project'
+                placeholder='Pick one'
+                data={projectsArray}
+                value={selectedProject}
+                onChange={(projectId) => setSelectedProject(projectId || '')}
+            />
+            {selectedProject && (
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Task id</th>
+                            <th>Time logs</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>{rows}</tbody>
+                </Table>
+            )}
+        </>
     );
-};
-
+}
 export default Tasks;

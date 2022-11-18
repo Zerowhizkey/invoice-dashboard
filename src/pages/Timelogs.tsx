@@ -1,16 +1,17 @@
 import { useInvoice } from '@/contexts/Index';
-
+import { Accordion } from '@mantine/core';
 const Timelogs = () => {
     const { timelogs } = useInvoice();
     return (
-        <div>
-            <h4>Timelogs</h4>
-            <div>
+        <Accordion>
+            <Accordion.Item value='customization'>
+                <Accordion.Control>Time logs</Accordion.Control>
+
                 {timelogs.map((time) => (
-                    <p key={time.id}>{time.id}</p>
+                    <Accordion.Panel key={time.id}>{time.id}</Accordion.Panel>
                 ))}
-            </div>
-        </div>
+            </Accordion.Item>
+        </Accordion>
     );
 };
 

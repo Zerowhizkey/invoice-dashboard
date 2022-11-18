@@ -5,8 +5,6 @@ import { Select } from '@mantine/core';
 
 const Users = () => {
     const { users, projects, tasks, timelogs } = useInvoice();
-    console.log(users);
-    console.log(projects);
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedProject, setSelectedProject] = useState('');
     const [selectedTask, setSelectedTask] = useState('');
