@@ -36,13 +36,44 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
             setTimelogs(timelog);
         });
     };
+    const deleteTask = async (id: string) => {
+        const deleted = await api.tasks.delete(id);
+        if (!deleted) return;
+        await api.tasks.list().then((task) => {
+            setTasks(task);
+        });
+    };
+    const deleteProject = async (id: string) => {
+        const deleted = await api.projects.delete(id);
+        if (!deleted) return;
+        await api.projects.list().then((project) => {
+            setProjects(project);
+        });
+    };
+    const deleteUser = async (id: string) => {
+        const deleted = await api.users.delete(id);
+        if (!deleted) return;
+        await api.users.list().then((user) => {
+            setUsers(user);
+        });
+    };
     useEffect(() => {
         initialLoad();
     }, []);
 
     return (
         <InvoiceContex.Provider
-            value={{ users, projects, tasks, timelogs, loading, deleteTimelog }}
+            value={{
+                users,
+                projects,
+                tasks,
+                timelogs,
+                loading,
+                deleteTimelog,
+                deleteProject,
+                deleteTask,
+                deleteUser,
+            }}
         >
             {children}
         </InvoiceContex.Provider>

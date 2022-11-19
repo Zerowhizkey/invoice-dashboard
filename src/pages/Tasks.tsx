@@ -1,9 +1,14 @@
 import { Table, Select } from '@mantine/core';
 import { useInvoice } from '@/contexts/Index';
 import { useMemo, useState } from 'react';
+
 function Tasks() {
-    const { projects, tasks } = useInvoice();
+    const { projects, tasks, deleteTask } = useInvoice();
     const [selectedProject, setSelectedProject] = useState('');
+
+    const handleDelete = (id: string) => {
+        deleteTask(id);
+    };
 
     const projectsArray = useMemo(() => {
         return projects.map(({ id, name }) => ({
@@ -18,6 +23,7 @@ function Tasks() {
             <tr key={task.id}>
                 <td>{task.title}</td>
                 <td>{task.userId}</td>
+                <td onClick={() => handleDelete(task.id)}>x</td>
             </tr>
         ));
 
@@ -37,8 +43,6 @@ function Tasks() {
                         <tr>
                             <th>Task</th>
                             <th>Task id</th>
-                            <th>Time logs</th>
-                            <th>Cost</th>
                         </tr>
                     </thead>
                     <tbody>{rows}</tbody>

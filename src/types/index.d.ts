@@ -8,6 +8,9 @@ interface InvoiceContext {
     timelogs: Timelog[];
     loading: boolean;
     deleteTimelog: (id: id) => void;
+    deleteTask: (id: id) => void;
+    deleteProject: (id: id) => void;
+    deleteUser: (id: id) => void;
 }
 
 type User = {

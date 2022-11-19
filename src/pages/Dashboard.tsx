@@ -1,12 +1,23 @@
 import { Table } from '@mantine/core';
 import { useInvoice } from '@/contexts/Index';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(customParseFormat);
+dayjs.extend(duration);
+
 function Dashboard() {
     const { users, projects, tasks, timelogs } = useInvoice();
-
     const uows = users.filter((u) => u.id !== '').length;
     const pows = projects.filter((p) => p.id !== '').length;
     const tows = tasks.filter((t) => t.id !== '').length;
-    const tuows = timelogs.filter((t) => t.id !== '').length;
+
+    const total = timelogs
+        .map((time) => time)
+        .reduce((sum, curr) => {
+            return sum + (curr.timerStop - curr.timerStart);
+        }, 0);
 
     return (
         <Table>
@@ -48,7 +59,7 @@ function Dashboard() {
 
             <tbody>
                 <tr>
-                    <td>{tuows}</td>
+                    <td>{dayjs.duration(total).format('HH:mm:ss')}</td>
                 </tr>
             </tbody>
         </Table>
