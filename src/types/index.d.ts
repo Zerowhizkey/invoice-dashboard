@@ -6,11 +6,13 @@ interface InvoiceContext {
     projects: Project[];
     tasks: Task[];
     timelogs: Timelog[];
+    invoices: Invoice[];
     loading: boolean;
     deleteTimelog: (id: id) => void;
     deleteTask: (id: id) => void;
     deleteProject: (id: id) => void;
     deleteUser: (id: id) => void;
+    addInvoice: (id: id, data: unknown, pdata: unknown) => void;
 }
 
 type User = {
@@ -23,6 +25,7 @@ type Project = {
     userId: string;
     name: string;
     color: string;
+    hourly_rate: number;
 };
 
 type Task = {
@@ -39,4 +42,13 @@ type Timelog = {
     taskId: string;
     timerStart: number;
     timerStop: number;
+};
+
+type Invoice = {
+    id: string;
+    status: string;
+    due_date: number;
+    amount: number;
+    customer: string;
+    create_date: number;
 };

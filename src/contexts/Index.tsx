@@ -8,6 +8,7 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [timelogs, setTimelogs] = useState<Timelog[]>([]);
+    const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [loading, setLoading] = useState(true);
 
     const initialLoad = async () => {
@@ -57,6 +58,15 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
             setUsers(user);
         });
     };
+
+    const addInvoice = async (id: string, data: unknown, pdata: unknown) => {
+        await api.projects.patch(id, pdata);
+        const invoice = await api.invoices.post(data);
+        setInvoices(invoice);
+        await api.projects.list();
+        await api.invoices.list();
+    };
+
     useEffect(() => {
         initialLoad();
     }, []);
@@ -68,11 +78,13 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
                 projects,
                 tasks,
                 timelogs,
+                invoices,
                 loading,
                 deleteTimelog,
                 deleteProject,
                 deleteTask,
                 deleteUser,
+                addInvoice,
             }}
         >
             {children}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 const BASE_URL = 'https://silk-sapphire-houseboat.glitch.me';
-const validRoutes = ['users', 'projects', 'tasks', 'timelogs'];
+const validRoutes = ['users', 'projects', 'tasks', 'timelogs', 'invoices'];
 
 const createApiHandler = <T>(route: string) => {
     if (!validRoutes.includes(route)) {
@@ -23,7 +23,9 @@ const createApiHandler = <T>(route: string) => {
             return response.data;
         },
         async patch(id: string, data: unknown) {
-            const response = await axios.patch(`${URL}/${id}`, data);
+            const response = await axios.patch(`${URL}/${id}`, {
+                hourly_rate: data,
+            });
             return response.data;
         },
         async delete(id: string) {
@@ -37,5 +39,6 @@ const api = {
     projects: createApiHandler<Project>('projects'),
     tasks: createApiHandler<Task>('tasks'),
     timelogs: createApiHandler<Timelog>('timelogs'),
+    invoices: createApiHandler<Invoice>('invoices'),
 };
 export default api;
