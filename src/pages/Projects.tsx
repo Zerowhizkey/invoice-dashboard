@@ -1,23 +1,10 @@
 import { Table, Select } from '@mantine/core';
 import { useInvoice } from '@/contexts/Index';
 import { useMemo, useState } from 'react';
-import { v4 as uuid } from 'uuid';
-function Projects() {
-    const { users, projects, tasks, deleteProject, addInvoice } = useInvoice();
-    const [selectedUser, setSelectedUser] = useState('');
-    const [price, setPrice] = useState(0);
 
-    const handleAdd = (id: string) => {
-        const data = {
-            id: uuid(),
-            status: 'ej betald',
-            due_date: Date.now() + 2592000000,
-            amount: 100,
-            customer: selectedUser,
-            create_date: Date.now(),
-        };
-        addInvoice(id, data, price);
-    };
+function Projects() {
+    const { users, projects, tasks, deleteProject } = useInvoice();
+    const [selectedUser, setSelectedUser] = useState('');
 
     const handleDelete = (id: string) => {
         deleteProject(id);
@@ -38,9 +25,7 @@ function Projects() {
                 <td>{project.name}</td>
                 <td>{project.userId}</td>
                 <td>{tows}</td>
-                <td>
-                    <button onClick={() => handleAdd(project.id)}>Add</button>
-                </td>
+
                 <td onClick={() => handleDelete(project.id)}>x</td>
             </tr>
         ));

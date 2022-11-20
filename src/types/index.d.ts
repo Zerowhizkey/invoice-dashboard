@@ -12,7 +12,8 @@ interface InvoiceContext {
     deleteTask: (id: id) => void;
     deleteProject: (id: id) => void;
     deleteUser: (id: id) => void;
-    addInvoice: (id: id, data: unknown, pdata: unknown) => void;
+    addInvoice: (data: unknown) => void;
+    addHourly: (id: Id, data: unknown) => void;
 }
 
 type User = {

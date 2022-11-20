@@ -59,12 +59,16 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
         });
     };
 
-    const addInvoice = async (id: string, data: unknown, pdata: unknown) => {
-        await api.projects.patch(id, pdata);
+    const addInvoice = async (data: unknown) => {
         const invoice = await api.invoices.post(data);
         setInvoices(invoice);
-        await api.projects.list();
+
         await api.invoices.list();
+    };
+
+    const addHourly = async (id: string, data: unknown) => {
+        await api.projects.patch(id, data);
+        await api.projects.list();
     };
 
     useEffect(() => {
@@ -85,6 +89,7 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
                 deleteTask,
                 deleteUser,
                 addInvoice,
+                addHourly,
             }}
         >
             {children}

@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { Dashboard, Users, Projects, Tasks, Timelogs } from '@/pages/index';
+import {
+    Dashboard,
+    Users,
+    Projects,
+    Tasks,
+    Timelogs,
+    Invoices,
+} from '@/pages/index';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import {
     AppShell,
@@ -66,6 +73,9 @@ function AppShellLayout() {
                                 <Link to={'timelogs'} onClick={handleBurger}>
                                     Timelogs
                                 </Link>
+                                <Link to={'invoices'} onClick={handleBurger}>
+                                    Invoice
+                                </Link>
                             </div>
                         </Navbar.Section>
                     </Navbar>
@@ -119,6 +129,7 @@ function AppShellLayout() {
                     <Route path='projects' element={<Projects />} />
                     <Route path='tasks' element={<Tasks />} />
                     <Route path='timelogs' element={<Timelogs />} />
+                    <Route path='invoices' element={<Invoices />} />
                 </Routes>
             </AppShell>
         </BrowserRouter>
