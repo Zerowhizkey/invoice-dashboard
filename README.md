@@ -45,13 +45,13 @@
 -   Ta bort en tidtagning (x)
 -   Ta bort en task (x)
 -   Ta bort ett projekt (x)
--   Sätta ett timpris på ett projekt ()
--   Skapa en "faktura" för ett valt projekt och välja tasks som "fakturan" ska innehålla ()
--   Se en lista på "fakturor" och status ()
+-   Sätta ett timpris på ett projekt (x)
+-   Skapa en "faktura" för ett valt projekt och välja tasks som "fakturan" ska innehålla (x)
+-   Se en lista på "fakturor" och status (x)
 -   Se en överblicks-sida som visar:
 -   Antal projekt (x)
 -   Antal tasks (x)
--   Antal "fakturor" ()
+-   Antal "fakturor" (x)
 -   Tid som loggats de senaste 30 dagarna ()
 -   Antalet kronor som fakturerats det senaste året ()
 
@@ -67,16 +67,16 @@
     (x)
 
 -   En faktura ska innehålla
--   Status (Ej betald, betald, försenad)
--   Förfallodag (30 dagar från datumet vi skapade den)
--   Summa (tid x projektets timpris)
--   Kundens namn ()
+-   Status (Ej betald, betald, försenad) (x)
+-   Förfallodag (30 dagar från datumet vi skapade den) (x)
+-   Summa (tid x projektets timpris) (x)
+-   Kundens namn (x)
 
 -   Listorna ska vara presenterade som tabeller med följande kolumner:
 -   Tasks: Namn, Projektets namn (x)
 -   Projekt: Namn, antal tasks (x)
--   Fakturor: Kundnamn, status, förfallodatum, summa ()
--   Applikationen ska inte innehålla några "@ts-ignore", typfel och inga implicita any. ()
+-   Fakturor: Kundnamn, status, förfallodatum, summa (x)
+-   Applikationen ska inte innehålla några "@ts-ignore", typfel och inga implicita any. (x)
 
 ## För att uppnå Väl Godkänt är kraven att:
 

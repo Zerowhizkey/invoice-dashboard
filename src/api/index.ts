@@ -19,11 +19,11 @@ const createApiHandler = <T>(route: string) => {
             return response.data;
         },
         async post(data: unknown) {
-            const response = await axios.post(URL, data);
+            const response = await axios.post<T>(URL, data);
             return response.data;
         },
         async patch(id: string, data: unknown) {
-            const response = await axios.patch(`${URL}/${id}`, {
+            const response = await axios.patch<T>(`${URL}/${id}`, {
                 hourly_rate: data,
             });
             return response.data;

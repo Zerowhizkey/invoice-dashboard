@@ -12,6 +12,7 @@ interface InvoiceContext {
     deleteTask: (id: id) => void;
     deleteProject: (id: id) => void;
     deleteUser: (id: id) => void;
+    deleteInvoice: (id: id) => void;
     addInvoice: (data: unknown) => void;
     addHourly: (id: Id, data: unknown) => void;
 }

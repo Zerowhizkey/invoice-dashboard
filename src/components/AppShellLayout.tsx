@@ -5,7 +5,8 @@ import {
     Projects,
     Tasks,
     Timelogs,
-    Invoices,
+    InvoiceOverview,
+    Invoice,
 } from '@/pages/index';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import {
@@ -73,7 +74,13 @@ function AppShellLayout() {
                                 <Link to={'timelogs'} onClick={handleBurger}>
                                     Timelogs
                                 </Link>
-                                <Link to={'invoices'} onClick={handleBurger}>
+                                <Link
+                                    to={'invoiceoverview'}
+                                    onClick={handleBurger}
+                                >
+                                    Invoice Dashboard
+                                </Link>
+                                <Link to={'invoice'} onClick={handleBurger}>
                                     Invoice
                                 </Link>
                             </div>
@@ -129,7 +136,11 @@ function AppShellLayout() {
                     <Route path='projects' element={<Projects />} />
                     <Route path='tasks' element={<Tasks />} />
                     <Route path='timelogs' element={<Timelogs />} />
-                    <Route path='invoices' element={<Invoices />} />
+                    <Route
+                        path='invoiceoverview'
+                        element={<InvoiceOverview />}
+                    />
+                    <Route path='invoice' element={<Invoice />} />
                 </Routes>
             </AppShell>
         </BrowserRouter>

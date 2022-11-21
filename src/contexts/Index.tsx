@@ -14,16 +14,19 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
     const initialLoad = async () => {
         setLoading(true);
         try {
-            const [users, projects, tasks, timelogs] = await Promise.all([
-                api.users.list(),
-                api.projects.list(),
-                api.tasks.list(),
-                api.timelogs.list(),
-            ]);
+            const [users, projects, tasks, timelogs, invoices] =
+                await Promise.all([
+                    api.users.list(),
+                    api.projects.list(),
+                    api.tasks.list(),
+                    api.timelogs.list(),
+                    api.invoices.list(),
+                ]);
             setUsers(users);
             setProjects(projects);
             setTasks(tasks);
             setTimelogs(timelogs);
+            setInvoices(invoices);
         } catch (error) {
             console.error(error);
         }
@@ -58,10 +61,18 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
             setUsers(user);
         });
     };
+    const deleteInvoice = async (id: string) => {
+        const deleted = await api.invoices.delete(id);
+        if (!deleted) return;
+        await api.invoices.list().then((invoice) => {
+            setInvoices(invoice);
+        });
+    };
 
     const addInvoice = async (data: unknown) => {
         const invoice = await api.invoices.post(data);
-        setInvoices(invoice);
+        console.log(invoice);
+        setInvoices((prev) => [...prev, invoice]);
 
         await api.invoices.list();
     };
@@ -88,6 +99,7 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
                 deleteProject,
                 deleteTask,
                 deleteUser,
+                deleteInvoice,
                 addInvoice,
                 addHourly,
             }}

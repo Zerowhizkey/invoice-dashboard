@@ -8,10 +8,11 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 
 function Dashboard() {
-    const { users, projects, tasks, timelogs } = useInvoice();
+    const { users, projects, tasks, timelogs, invoices } = useInvoice();
     const uows = users.filter((u) => u.id !== '').length;
     const pows = projects.filter((p) => p.id !== '').length;
     const tows = tasks.filter((t) => t.id !== '').length;
+    const iows = invoices.filter((i) => i.id !== '').length;
 
     const total = timelogs
         .map((time) => time)
@@ -60,6 +61,17 @@ function Dashboard() {
             <tbody>
                 <tr>
                     <td>{dayjs.duration(total).format('HH:mm:ss')}</td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Invoices</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>{iows}</td>
                 </tr>
             </tbody>
         </Table>
