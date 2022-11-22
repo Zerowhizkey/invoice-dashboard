@@ -69,7 +69,7 @@ export const InvoiceProvider = ({ children }: ProviderProps) => {
         });
     };
 
-    const addInvoice = async (data: unknown) => {
+    const addInvoice = async (data: Invoice) => {
         const invoice = await api.invoices.post(data);
         console.log(invoice);
         setInvoices((prev) => [...prev, invoice]);

@@ -13,8 +13,8 @@ interface InvoiceContext {
     deleteProject: (id: id) => void;
     deleteUser: (id: id) => void;
     deleteInvoice: (id: id) => void;
-    addInvoice: (data: unknown) => void;
-    addHourly: (id: Id, data: unknown) => void;
+    addInvoice: (data: Invoice) => void;
+    addHourly: (id: Id, data: number) => void;
 }
 
 type User = {

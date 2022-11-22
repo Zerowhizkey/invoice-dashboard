@@ -52,8 +52,8 @@
 -   Antal projekt (x)
 -   Antal tasks (x)
 -   Antal "fakturor" (x)
--   Tid som loggats de senaste 30 dagarna ()
--   Antalet kronor som fakturerats det senaste året ()
+-   Tid som loggats de senaste 30 dagarna (x)
+-   Antalet kronor som fakturerats det senaste året (x)
 
 ## För att uppnå Godkänt är kraven att:
 
@@ -61,7 +61,7 @@
 
 -   Applikationen ska använda React Context som "Store" för applikations-bred data. (x)
 
--   Samtliga krav under "En användare ska kunna" är uppfyllda. ()
+-   Samtliga krav under "En användare ska kunna" är uppfyllda. (x)
 
 -   Applikationen ska vara byggd med responsiv design i åtanke.
     (x)
@@ -80,7 +80,7 @@
 
 ## För att uppnå Väl Godkänt är kraven att:
 
--   Applikationen ska inte heller innehålla några explicita any. ()
+-   Applikationen ska inte heller innehålla några explicita any. (x)
 
 -   Kunna välja att avrunda tiden uppåt på tasks när man skapar en faktura till närmsta [1 min, 5 min, 15 min, 30 min, 1h].
     (Avrundningen ska ske på varje individuell task, inte på hela fakturan) ()

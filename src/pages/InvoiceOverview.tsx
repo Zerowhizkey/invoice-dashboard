@@ -5,13 +5,23 @@ import { v4 as uuid } from 'uuid';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import duration from 'dayjs/plugin/duration';
+import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(duration);
+dayjs.extend(isBetween);
 
 const InvoiceOverview = () => {
-    const { users, projects, tasks, addInvoice, addHourly, timelogs } =
-        useInvoice();
+    const {
+        users,
+        projects,
+        tasks,
+        addInvoice,
+        addHourly,
+        timelogs,
+        invoices,
+        deleteInvoice,
+    } = useInvoice();
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedProject, setSelectedProject] = useState('');
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
@@ -57,13 +67,17 @@ const InvoiceOverview = () => {
                     .seconds();
                 const p = projects.find((p) => p.id === time.projectId);
                 const hourlyRate = (p && p.hourly_rate) ?? 0;
+                // if (t < 60) {
+                //     console.log(t)
+                //     return (t = 60);
+                // }
                 const sum = (hourlyRate * t) / 60;
-
                 return prev + sum;
             }, 0);
         return invPrice;
     });
-    const total = chosenTask.reduce((acc, sum) => acc + sum, 0);
+    const total =
+        Math.round(chosenTask.reduce((acc, sum) => acc + sum, 0) * 10) / 100;
 
     const handleSelectedTasks = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
@@ -81,8 +95,8 @@ const InvoiceOverview = () => {
             id: uuid(),
             status: 'ej betald',
             due_date: Date.now() + 2592000000,
-            amount: total.toFixed(2),
-            customer: custName,
+            amount: total,
+            customer: custName?.name || 'unknown',
             create_date: Date.now(),
         };
         addInvoice(data);
@@ -99,7 +113,6 @@ const InvoiceOverview = () => {
                 <td>{project.name}</td>
                 <td>
                     <NumberInput
-                        // defaultValue={price || currentPrice?.hourly_rate}
                         value={price}
                         onChange={(price) => setPrice(price || 0)}
                     />
@@ -123,15 +136,7 @@ const InvoiceOverview = () => {
             return (
                 <tr key={task.id}>
                     <td>{task.title}</td>
-                    {/* {projects
-                        .filter(
-                            (project) =>
-                                project.userId === selectedUser &&
-                                project.id === selectedProject
-                        )
-                        .map((project) => ( */}
                     <td>{project?.hourly_rate}</td>
-                    {/* ))} */}
                     {timelogs
                         .filter((time) => time.taskId === task.id)
                         .map((time) => (
@@ -154,6 +159,26 @@ const InvoiceOverview = () => {
                 </tr>
             );
         });
+
+    const handleDelete = (id: string) => {
+        deleteInvoice(id);
+    };
+
+    const selectedUserName = users.find(
+        (user) => user.id === selectedUser
+    )?.name;
+
+    const iows = invoices
+        .filter((i) => i.customer === selectedUserName)
+        .map((invoice) => (
+            <tr key={invoice.id}>
+                <td>{invoice.amount}</td>
+                <td>{invoice.customer}</td>
+                <td>{invoice.status}</td>
+
+                <td onClick={() => handleDelete(invoice.id)}>x</td>
+            </tr>
+        ));
 
     return (
         <>
@@ -179,38 +204,47 @@ const InvoiceOverview = () => {
             )}
 
             {selectedProject && (
-                <>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Project</th>
-                                <th>Hourly price</th>
-                            </tr>
-                        </thead>
-                        <tbody>{pows}</tbody>
-                    </Table>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Task</th>
-                                <th>Price per h</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tows}
-                            <tr>
-                                <td>
-                                    <button onClick={handleAddInvoice}>
-                                        Create Invoice
-                                    </button>
-                                </td>
-                                <td>
-                                    <p>Total price: {total}kr</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </Table>
-                </>
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Hourly price</th>
+                        </tr>
+                    </thead>
+                    <tbody>{pows}</tbody>
+
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Price per h</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tows}
+                        <tr>
+                            <td>
+                                <button>Round up</button>
+                            </td>
+                            <td>
+                                <button onClick={handleAddInvoice}>
+                                    Create Invoice
+                                </button>
+                            </td>
+                            <td>
+                                <p>Total price: {total} kr</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th>Price</th>
+                            <th>Invoice Customer</th>
+                            <th>Invoice Id</th>
+                            <th>Invoice Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>{iows}</tbody>
+                </Table>
             )}
         </>
     );

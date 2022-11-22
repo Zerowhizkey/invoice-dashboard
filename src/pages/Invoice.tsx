@@ -11,7 +11,7 @@ function Invoice() {
     const iows = invoices.map((invoice) => (
         <tr key={invoice.id}>
             <td>{invoice.amount}</td>
-            <td>{invoice.id}</td>
+            <td>{invoice.customer}</td>
             <td>{invoice.status}</td>
 
             <td onClick={() => handleDelete(invoice.id)}>x</td>

@@ -3,7 +3,8 @@ import { useInvoice } from '@/contexts/Index';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import duration from 'dayjs/plugin/duration';
-
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 
@@ -15,10 +16,37 @@ function Dashboard() {
     const iows = invoices.filter((i) => i.id !== '').length;
 
     const total = timelogs
+        .filter(
+            (time) =>
+                dayjs(time.timerStart).isBetween(
+                    Date.now() - 2592000000,
+                    Date.now()
+                ) ||
+                dayjs(time.timerStop).isBetween(
+                    Date.now() - 2592000000,
+                    Date.now()
+                )
+        )
         .map((time) => time)
         .reduce((sum, curr) => {
             return sum + (curr.timerStop - curr.timerStart);
         }, 0);
+
+    const all = invoices
+        .filter((invoice) =>
+            dayjs(invoice.create_date).isBetween(
+                new Date().getFullYear(),
+                Date.now()
+            )
+        )
+        .map((i) => i.amount);
+    const calced =
+        Math.round(
+            all.reduce((acc, value) => {
+                return acc + value;
+            }, 0) * 100
+        ) / 100;
+    console.log(calced);
 
     return (
         <Table>
@@ -54,7 +82,10 @@ function Dashboard() {
             </tbody>
             <thead>
                 <tr>
-                    <th>Total time</th>
+                    <th>
+                        Total time since :
+                        {dayjs(Date.now() - 2592000000).format('DD/MM/YYYY')}
+                    </th>
                 </tr>
             </thead>
 
@@ -72,6 +103,20 @@ function Dashboard() {
             <tbody>
                 <tr>
                     <td>{iows}</td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>
+                        Total amount sek this year :
+                        {dayjs(Date.now()).format('YYYY')}
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>{calced}</td>
                 </tr>
             </tbody>
         </Table>
