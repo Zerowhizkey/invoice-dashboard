@@ -25,6 +25,7 @@ const InvoiceOverview = () => {
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedProject, setSelectedProject] = useState('');
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+    // const [selectedTasksRound, setSelectedTasksRound] = useState<string[]>([]);
     const [price, setPrice] = useState(0);
 
     useEffect(() => {
@@ -58,26 +59,19 @@ const InvoiceOverview = () => {
 
     const custName = users.find((u) => u.id === selectedUser);
 
-    const chosenTask = selectedTasks.map((t) => {
-        const invPrice: number = timelogs
-            .filter((time) => time.taskId === t)
-            .reduce<number>((prev, time) => {
-                const t = dayjs
-                    .duration(time.timerStop - time.timerStart)
-                    .seconds();
-                const p = projects.find((p) => p.id === time.projectId);
-                const hourlyRate = (p && p.hourly_rate) ?? 0;
-                // if (t < 60) {
-                //     console.log(t)
-                //     return (t = 60);
-                // }
-                const sum = (hourlyRate * t) / 60;
-                return prev + sum;
-            }, 0);
-        return invPrice;
-    });
-    const total =
-        Math.round(chosenTask.reduce((acc, sum) => acc + sum, 0) * 10) / 100;
+    const totalTime = timelogs
+        .filter((timelog) =>
+            selectedTasks.some((taskId) => taskId === timelog.taskId)
+        )
+        .map((timelog) =>
+            dayjs.duration(timelog.timerStop - timelog.timerStart).asHours()
+        )
+        .reduce((acc, sum) => acc + sum, 0);
+    const p = projects.find((p) => p.id === selectedProject);
+    const hourlyRate = (p && p.hourly_rate) ?? 0;
+    const calc = hourlyRate * totalTime;
+    const total = Math.round(calc * 100) / 100;
+    // 1 = 1h 0.5 = 30min 0.25 = 15min 0.083 = 5min 0.016 = 1min 
 
     const handleSelectedTasks = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
@@ -85,7 +79,7 @@ const InvoiceOverview = () => {
         }
         if (!e.target.checked) {
             setSelectedTasks((tasks) =>
-                tasks.filter((_, index) => index !== 0)
+                tasks.filter((task) => task !== e.target.value)
             );
         }
     };
@@ -155,6 +149,10 @@ const InvoiceOverview = () => {
                             value={task.id}
                             onChange={handleSelectedTasks}
                         />
+                        {/* <Checkbox
+                            value={task.id}
+                            onChange={handleSelectedTasksRound}
+                        /> */}
                     </td>
                 </tr>
             );
@@ -251,3 +249,57 @@ const InvoiceOverview = () => {
 };
 
 export default InvoiceOverview;
+// const chosenTask = selectedTasks.map((t) => {
+//     const invPrice: number = timelogs
+//         .filter((time) => time.taskId === t)
+//         .reduce<number>((prev, time) => {
+//             const t = dayjs
+//                 .duration(time.timerStop - time.timerStart)
+//                 .seconds();
+//             const p = projects.find((p) => p.id === time.projectId);
+//             const hourlyRate = (p && p.hourly_rate) ?? 0;
+
+//             const sum = (hourlyRate * t) / 60;
+//             console.log(t);
+//             return prev + sum;
+//         }, 0);
+//     return invPrice;
+// });
+// const total =
+//     Math.round(chosenTask.reduce((acc, sum) => acc + sum, 0) * 10) / 100;
+// const handleSelectedTasksRound = (
+//     e: React.ChangeEvent<HTMLInputElement>
+// ) => {
+//     if (e.target.checked) {
+//         setSelectedTasksRound((prev) => [...prev, e.target.value]);
+//     }
+//     if (!e.target.checked) {
+//         setSelectedTasksRound((tasks) =>
+//             tasks.filter((_, index) => index !== 0)
+//         );
+//     }
+// };
+
+// const chosenTaskRound = selectedTasksRound.map((t) => {
+//     const invPrice: number = timelogs
+//         .filter((time) => time.taskId === t)
+//         .reduce<number>((prev, time) => {
+//             const t = dayjs
+//                 .duration(time.timerStop - time.timerStart)
+//                 .asHours();
+//             const p = projects.find((p) => p.id === time.projectId);
+//             const hourlyRate = (p && p.hourly_rate) ?? 0;
+//             // if (t < 1) return (t = 1);
+//             const hour = t / 100;
+//             const sum = hourlyRate * hour * 10;
+//             console.log(t);
+//             console.log(hour);
+//             console.log(sum);
+//             return prev + sum;
+//         }, 0);
+//     return invPrice;
+// });
+
+// const totalRound =
+//     Math.round(chosenTaskRound.reduce((acc, sum) => acc + sum, 0) * 100) /
+//     100;

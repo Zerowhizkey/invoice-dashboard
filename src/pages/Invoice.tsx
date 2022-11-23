@@ -1,6 +1,6 @@
 import { Table } from '@mantine/core';
 import { useInvoice } from '@/contexts/Index';
-
+import dayjs from 'dayjs';
 function Invoice() {
     const { invoices, deleteInvoice } = useInvoice();
 
@@ -13,6 +13,7 @@ function Invoice() {
             <td>{invoice.amount}</td>
             <td>{invoice.customer}</td>
             <td>{invoice.status}</td>
+            <td>{dayjs(invoice.due_date).format('YYYY/MM/DD')}</td>
 
             <td onClick={() => handleDelete(invoice.id)}>x</td>
         </tr>
@@ -24,8 +25,8 @@ function Invoice() {
                 <tr>
                     <th>Price</th>
                     <th>Invoice Customer</th>
-                    <th>Invoice Id</th>
                     <th>Invoice Status</th>
+                    <th>Invoice Due Date</th>
                 </tr>
             </thead>
             <tbody>{iows}</tbody>
