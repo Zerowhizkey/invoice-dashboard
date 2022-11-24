@@ -1,37 +1,10 @@
-// import { Table } from '@mantine/core';
+import { useListState } from '@mantine/hooks';
 import { useInvoice } from '@/contexts/Index';
 import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import duration from 'dayjs/plugin/duration';
-import isBetween from 'dayjs/plugin/isBetween';
-dayjs.extend(isBetween);
-dayjs.extend(customParseFormat);
-dayjs.extend(duration);
-
-import { useState, useMemo } from 'react';
-import {
-    DragDropContext,
-    Draggable,
-    DraggingStyle,
-    Droppable,
-    DropResult,
-    NotDraggingStyle,
-} from 'react-beautiful-dnd';
-
-const getItemStyle = (
-    isDragging: boolean,
-    draggableStyle?: DraggingStyle | NotDraggingStyle
-) => ({
-    padding: 10,
-    margin: `0 50px 15px 50px`,
-    background: isDragging ? '#4a2975' : 'white',
-    color: isDragging ? 'white' : 'black',
-    border: `1px solid black`,
-    fontSize: `20px`,
-    borderRadius: `5px`,
-
-    ...draggableStyle,
-});
+import { useMemo } from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
+import { StrictModeDroppable } from '@/components/StrictModeDroppable';
+import DashItem from '@/components/DashItem';
 
 function Dashboard() {
     const { users, projects, tasks, timelogs, invoices } = useInvoice();
@@ -95,7 +68,7 @@ function Dashboard() {
         };
     }, [users, projects, tasks, invoices]);
 
-    const [dashList, setDashList] = useState<Array<keyof typeof itemLength>>([
+    const [state, handlers] = useListState<keyof typeof itemLength>([
         'users',
         'projects',
         'tasks',
@@ -104,60 +77,103 @@ function Dashboard() {
         'calcAll',
     ]);
 
-    const onDragEnd = (result: DropResult) => {
-        const { source, destination } = result;
-        if (!destination) return;
-
-        const items = Array.from(dashList);
-        const [newOrder] = items.splice(source.index, 1);
-        items.splice(destination.index, 0, newOrder);
-
-        setDashList(items);
-    };
+    const items = state.map((state, index) => (
+        <DashItem key={state} index={index} draggableId={state}>
+            {itemLength[state]}
+        </DashItem>
+    ));
 
     return (
-        <>
-            <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId='todo'>
-                    {(provided) => (
-                        <div
-                            className='todo'
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                        >
-                            {dashList.map((key, index) => {
-                                return (
-                                    <Draggable
-                                        key={key}
-                                        draggableId={key}
-                                        index={index}
-                                    >
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                style={getItemStyle(
-                                                    snapshot.isDragging,
-                                                    provided.draggableProps
-                                                        .style
-                                                )}
-                                            >
-                                                {itemLength[key]}
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                );
-                            })}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
-        </>
+        <DragDropContext
+            onDragEnd={({ destination, source }) =>
+                handlers.reorder({
+                    from: source.index,
+                    to: destination?.index || 0,
+                })
+            }
+        >
+            <StrictModeDroppable droppableId='dnd-list' direction='vertical'>
+                {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {items}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </StrictModeDroppable>
+        </DragDropContext>
     );
 }
 export default Dashboard;
+// import customParseFormat from 'dayjs/plugin/customParseFormat';
+// import duration from 'dayjs/plugin/duration';
+// import isBetween from 'dayjs/plugin/isBetween';
+// dayjs.extend(isBetween);
+// dayjs.extend(customParseFormat);
+// dayjs.extend(duration);
+// const getItemStyle = (
+//     isDragging: boolean,
+//     draggableStyle?: DraggingStyle | NotDraggingStyle
+// ) => ({
+//     padding: 10,
+//     margin: `0 50px 15px 50px`,
+//     background: isDragging ? '#4a2975' : 'white',
+//     color: isDragging ? 'white' : 'black',
+//     border: `1px solid black`,
+//     fontSize: `20px`,
+//     borderRadius: `5px`,
+
+//     ...draggableStyle,
+// });
+
+// const onDragEnd = (result: DropResult) => {
+//     const { source, destination } = result;
+//     if (!destination) return;
+
+//     const items = Array.from(dashList);
+//     const [newOrder] = items.splice(source.index, 1);
+//     items.splice(destination.index, 0, newOrder);
+
+//     setDashList(items);
+// };
+// <>
+//     <DragDropContext onDragEnd={onDragEnd}>
+//         <Droppable droppableId='todo'>
+//             {(provided) => (
+//                 <div
+//                     className='todo'
+//                     {...provided.droppableProps}
+//                     ref={provided.innerRef}
+//                 >
+//                     {dashList.map((key, index) => {
+//                         return (
+//                             <Draggable
+//                                 key={key}
+//                                 draggableId={key}
+//                                 index={index}
+//                             >
+//                                 {(provided, snapshot) => (
+//                                     <div
+//                                         ref={provided.innerRef}
+//                                         {...provided.draggableProps}
+//                                         {...provided.dragHandleProps}
+//                                         style={getItemStyle(
+//                                             snapshot.isDragging,
+//                                             provided.draggableProps
+//                                                 .style
+//                                         )}
+//                                     >
+//                                         {itemLength[key]}
+//                                     </div>
+//                                 )}
+//                             </Draggable>
+//                         );
+//                     })}
+//                     {provided.placeholder}
+//                 </div>
+//             )}
+//         </Droppable>
+//     </DragDropContext>
+// </>
 // const listItems = [
 //     {
 //         id: '1',
@@ -283,3 +299,12 @@ export default Dashboard;
 //     .reduce((sum, curr) => {
 //         return sum + (curr.timerStop - curr.timerStart);
 //     }, 0);
+
+// const [dashList] = useState<Array<keyof typeof itemLength>>([
+//     'users',
+//     'projects',
+//     'tasks',
+//     'invoices',
+//     'total',
+//     'calcAll',
+// ]);

@@ -25,7 +25,8 @@ const InvoiceOverview = () => {
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedProject, setSelectedProject] = useState('');
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-    // const [selectedTasksRound, setSelectedTasksRound] = useState<string[]>([]);
+    const [round, setRound] = useState('');
+    // const [totalTime, setTotalTime] = useState(0);
     const [price, setPrice] = useState(0);
 
     useEffect(() => {
@@ -59,19 +60,47 @@ const InvoiceOverview = () => {
 
     const custName = users.find((u) => u.id === selectedUser);
 
-    const totalTime = timelogs
-        .filter((timelog) =>
-            selectedTasks.some((taskId) => taskId === timelog.taskId)
-        )
-        .map((timelog) =>
-            dayjs.duration(timelog.timerStop - timelog.timerStart).asHours()
-        )
-        .reduce((acc, sum) => acc + sum, 0);
-    const p = projects.find((p) => p.id === selectedProject);
-    const hourlyRate = (p && p.hourly_rate) ?? 0;
-    const calc = hourlyRate * totalTime;
-    const total = Math.round(calc * 100) / 100;
-    // 1 = 1h 0.5 = 30min 0.25 = 15min 0.083 = 5min 0.016 = 1min 
+    const totalCalcTime = useMemo(() => {
+        return timelogs
+            .filter((timelog) =>
+                selectedTasks.some((taskId) => taskId === timelog.taskId)
+            )
+            .map((timelog) =>
+                dayjs.duration(timelog.timerStop - timelog.timerStart).asHours()
+            )
+            .reduce((acc, sum) => acc + sum, 0);
+    }, [timelogs, selectedTasks]);
+
+    const roundTime = useMemo(() => {
+        if (!totalCalcTime) return 0;
+        // const remainder = totalCalcTime % 1;
+        // const fullHours = totalCalcTime - remainder;
+        // console.log(fullHours)
+        if (round === 'one-min') {
+            return 0.016;
+        }
+
+        if (round === 'five-min') {
+            return 0.083;
+        }
+        // if (round === 'fifteen-min') {
+        // }
+        // if (round === 'thirty-min') {
+        // }
+        if (round === 'sixty-min') {
+            return Math.ceil(totalCalcTime);
+        }
+        return totalCalcTime;
+    }, [totalCalcTime, round]);
+
+    const total = useMemo(() => {
+        const p = projects.find((p) => p.id === selectedProject);
+        const hourlyRate = (p && p.hourly_rate) ?? 0;
+        const calc = hourlyRate * roundTime;
+        return Math.round(calc * 100) / 100;
+    }, [projects, selectedProject, roundTime]);
+
+    // 1 = 1h 0.5 = 30min 0.25 = 15min 0.083 = 5min 0.016 = 1min
 
     const handleSelectedTasks = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
@@ -131,28 +160,25 @@ const InvoiceOverview = () => {
                 <tr key={task.id}>
                     <td>{task.title}</td>
                     <td>{project?.hourly_rate}</td>
-                    {timelogs
-                        .filter((time) => time.taskId === task.id)
-                        .map((time) => (
-                            <td key={time.id}>
-                                <p>
-                                    {dayjs
-                                        .duration(
-                                            time.timerStop - time.timerStart
-                                        )
-                                        .format('HH:mm:ss')}
-                                </p>
-                            </td>
-                        ))}
+                    <td>
+                        {dayjs(
+                            timelogs
+                                .filter((time) => time.taskId === task.id)
+                                .map((time) => time)
+                                .reduce((sum, curr) => {
+                                    return (
+                                        sum + (curr.timerStop - curr.timerStart)
+                                    );
+                                }, 0)
+                        )
+                            .subtract(1, 'hour')
+                            .format('HH:mm:ss')}
+                    </td>
                     <td>
                         <Checkbox
                             value={task.id}
                             onChange={handleSelectedTasks}
                         />
-                        {/* <Checkbox
-                            value={task.id}
-                            onChange={handleSelectedTasksRound}
-                        /> */}
                     </td>
                 </tr>
             );
@@ -177,6 +203,10 @@ const InvoiceOverview = () => {
                 <td onClick={() => handleDelete(invoice.id)}>x</td>
             </tr>
         ));
+
+    const handleRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setRound(e.target.value);
+    };
 
     return (
         <>
@@ -215,13 +245,21 @@ const InvoiceOverview = () => {
                         <tr>
                             <th>Task</th>
                             <th>Price per h</th>
+                            <th>Current time</th>
                         </tr>
                     </thead>
                     <tbody>
                         {tows}
                         <tr>
                             <td>
-                                <button>Round up</button>
+                                <select onChange={handleRound}>
+                                    <option value='default'>Nada</option>
+                                    <option value='one-min'>1 min</option>
+                                    <option value='five-min'>5 min</option>
+                                    <option value='fifteen-min'>15 min</option>
+                                    <option value='thirty-min'>30 min</option>
+                                    <option value='sixty-min'>60 min</option>
+                                </select>
                             </td>
                             <td>
                                 <button onClick={handleAddInvoice}>
@@ -237,7 +275,6 @@ const InvoiceOverview = () => {
                         <tr>
                             <th>Price</th>
                             <th>Invoice Customer</th>
-                            <th>Invoice Id</th>
                             <th>Invoice Status</th>
                         </tr>
                     </thead>
