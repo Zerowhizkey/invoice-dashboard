@@ -1,6 +1,5 @@
 import { Draggable } from 'react-beautiful-dnd';
 import { createStyles, Text } from '@mantine/core';
-import React, { useState } from 'react';
 
 const useStyles = createStyles((theme) => ({
     item: {

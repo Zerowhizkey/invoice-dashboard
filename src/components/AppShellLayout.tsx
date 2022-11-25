@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
     Dashboard,
-    Users,
     Projects,
     Tasks,
     Timelogs,
@@ -13,8 +12,6 @@ import {
     AppShell,
     Navbar,
     Header,
-    Footer,
-    Aside,
     Text,
     MediaQuery,
     Burger,
@@ -62,9 +59,6 @@ function AppShellLayout() {
                                 <Link to={'/'} onClick={handleBurger}>
                                     Dashboard
                                 </Link>
-                                <Link to={'users'} onClick={handleBurger}>
-                                    Users
-                                </Link>
                                 <Link to={'projects'} onClick={handleBurger}>
                                     Projects
                                 </Link>
@@ -86,22 +80,6 @@ function AppShellLayout() {
                             </div>
                         </Navbar.Section>
                     </Navbar>
-                }
-                aside={
-                    <MediaQuery smallerThan='sm' styles={{ display: 'none' }}>
-                        <Aside
-                            p='md'
-                            hiddenBreakpoint='sm'
-                            width={{ sm: 200, lg: 300 }}
-                        >
-                            <Text>Application sidebar</Text>
-                        </Aside>
-                    </MediaQuery>
-                }
-                footer={
-                    <Footer height={60} p='md'>
-                        Application footer
-                    </Footer>
                 }
                 header={
                     <Header height={{ base: 50, md: 70 }} p='md'>
@@ -132,7 +110,6 @@ function AppShellLayout() {
                 <Routes>
                     <Route path='/' element={<Dashboard />} />
                     <Route path='dashboard' element={<Dashboard />} />
-                    <Route path='users' element={<Users />} />
                     <Route path='projects' element={<Projects />} />
                     <Route path='tasks' element={<Tasks />} />
                     <Route path='timelogs' element={<Timelogs />} />

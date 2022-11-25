@@ -1,4 +1,4 @@
-import { Table, Select, Checkbox, NumberInput } from '@mantine/core';
+import { Table, Select, Checkbox, NumberInput, Button } from '@mantine/core';
 import { useEffect, useMemo, useState } from 'react';
 import { useInvoice } from '@/contexts/Index';
 import { v4 as uuid } from 'uuid';
@@ -148,9 +148,9 @@ const InvoiceOverview = () => {
                     />
                 </td>
                 <td>
-                    <button onClick={() => handleAddHourly(project.id)}>
+                    <Button onClick={() => handleAddHourly(project.id)}>
                         Add
-                    </button>
+                    </Button>
                 </td>
             </tr>
         ));
@@ -167,7 +167,7 @@ const InvoiceOverview = () => {
         .filter((i) => i.customer === selectedUserName)
         .map((invoice) => (
             <tr key={invoice.id}>
-                <td>{invoice.amount}</td>
+                <td>{invoice.amount} kr</td>
                 <td>{invoice.customer}</td>
                 <td>{invoice.status}</td>
 
@@ -257,9 +257,9 @@ const InvoiceOverview = () => {
                                 </select>
                             </td>
                             <td>
-                                <button onClick={handleAddInvoice}>
+                                <Button onClick={handleAddInvoice}>
                                     Create Invoice
-                                </button>
+                                </Button>
                             </td>
                             <td>
                                 <p>Total price: {total} kr</p>

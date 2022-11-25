@@ -1,4 +1,4 @@
-import { Table, Select } from '@mantine/core';
+import { Table, Select, Button } from '@mantine/core';
 import { useInvoice } from '@/contexts/Index';
 import { useMemo, useState } from 'react';
 
@@ -23,7 +23,9 @@ function Tasks() {
             <tr key={task.id}>
                 <td>{task.title}</td>
                 <td>{task.userId}</td>
-                <td onClick={() => handleDelete(task.id)}>x</td>
+                <td onClick={() => handleDelete(task.id)}>
+                    <Button>Remove</Button>
+                </td>
             </tr>
         ));
 

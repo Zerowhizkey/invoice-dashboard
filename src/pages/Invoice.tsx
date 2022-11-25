@@ -10,7 +10,7 @@ function Invoice() {
     // const customer = invoices.find((i) => i.customer);
     const iows = invoices.map((invoice) => (
         <tr key={invoice.id}>
-            <td>{invoice.amount}</td>
+            <td>{invoice.amount} kr</td>
             <td>{invoice.customer}</td>
             <td>{invoice.status}</td>
             <td>{dayjs(invoice.due_date).format('YYYY/MM/DD')}</td>

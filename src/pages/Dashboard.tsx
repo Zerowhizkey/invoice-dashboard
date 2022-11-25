@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { StrictModeDroppable } from '@/components/StrictModeDroppable';
 import DashItem from '@/components/DashItem';
+import { Button } from '@mantine/core';
 
 function Dashboard() {
     const { users, projects, tasks, timelogs, invoices } = useInvoice();
@@ -31,7 +32,11 @@ function Dashboard() {
             ),
             total: (
                 <p>
-                    total time:{' '}
+                    <p>
+                        total time since{' '}
+                        {dayjs().subtract(30, 'day').format('YYYY MM/DD')}
+                    </p>
+
                     {dayjs
                         .duration(
                             timelogs
@@ -63,7 +68,8 @@ function Dashboard() {
                         all.reduce((acc, value) => {
                             return acc + value;
                         }, 0) * 100
-                    ) / 100}
+                    ) / 100}{' '}
+                    kr
                 </p>
             ),
         };
@@ -92,7 +98,8 @@ function Dashboard() {
     return (
         <>
             {state.map((state) => (
-                <button
+                <Button
+                    style={{ margin: '10px' }}
                     key={state}
                     onClick={() =>
                         setShow({
@@ -102,7 +109,7 @@ function Dashboard() {
                     }
                 >
                     {state}
-                </button>
+                </Button>
             ))}
 
             <DragDropContext

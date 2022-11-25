@@ -1,0 +1,166 @@
+{
+	"users": [
+		{
+			"id": "6796f171-95b6-4543-acc2-9da1140ebb41",
+			"name": "Sandy"
+		},
+		{
+			"id": "99132727-8daa-4c50-ab7e-cae569a88c9f",
+			"name": "Linda"
+		},
+		{
+			"id": "115f62a6-3cc9-4cfc-a71b-b50fb54b6956",
+			"name": "Vincent"
+		},
+		{
+			"id": "4778b1fc-7a5e-4f4c-8b0d-f397d76af455",
+			"name": "Hej kom och hjälp"
+		}
+	],
+	"projects": [
+		{
+			"id": "c4e7c09d-415d-4528-a7f7-c24afe7f330f",
+			"userId": "6796f171-95b6-4543-acc2-9da1140ebb41",
+			"name": "Style a website",
+			"color": "#d60000",
+			"hourly_rate": 200
+		},
+		{
+			"id": "246d4fcd-85fe-4c1c-8315-3837bdaddd82",
+			"userId": "99132727-8daa-4c50-ab7e-cae569a88c9f",
+			"name": "Build a drag and drop",
+			"color": "#0d1cf2",
+			"hourly_rate": 2500
+		},
+		{
+			"id": "402ad007-d4e8-4a42-9bb9-0c27ab7d5baf",
+			"userId": "115f62a6-3cc9-4cfc-a71b-b50fb54b6956",
+			"name": "Build something bulletproof",
+			"color": "#dbdf11"
+		},
+		{
+			"id": "7088cc25-3a14-4ce4-8f23-e1417754aa4b",
+			"userId": "4778b1fc-7a5e-4f4c-8b0d-f397d76af455",
+			"name": "lol",
+			"color": "#e00000"
+		}
+	],
+	"tasks": [
+		{
+			"id": "26116467-35d3-4b89-9ffa-3892a0086549",
+			"userId": "6796f171-95b6-4543-acc2-9da1140ebb41",
+			"projectId": "c4e7c09d-415d-4528-a7f7-c24afe7f330f",
+			"title": "Style a page"
+		},
+		{
+			"id": "a6bc7f38-e43a-4fb0-bb48-cce458e00c94",
+			"userId": "99132727-8daa-4c50-ab7e-cae569a88c9f",
+			"projectId": "246d4fcd-85fe-4c1c-8315-3837bdaddd82",
+			"title": "Make it fking work"
+		},
+		{
+			"id": "1cf49830-80e5-4df3-8490-2133d1111edf",
+			"userId": "115f62a6-3cc9-4cfc-a71b-b50fb54b6956",
+			"projectId": "402ad007-d4e8-4a42-9bb9-0c27ab7d5baf",
+			"title": "Make a page bulletproof"
+		},
+		{
+			"id": "37a5d74d-ffcc-4278-93a8-6e0fa2d6a10d",
+			"userId": "99132727-8daa-4c50-ab7e-cae569a88c9f",
+			"projectId": "246d4fcd-85fe-4c1c-8315-3837bdaddd82",
+			"title": "Maybe i shouldnt"
+		}
+	],
+	"timelogs": [
+		{
+			"id": "3749f327-34d2-455b-aeaa-f24875f5ef29",
+			"userId": "6796f171-95b6-4543-acc2-9da1140ebb41",
+			"projectId": "c4e7c09d-415d-4528-a7f7-c24afe7f330f",
+			"taskId": "26116467-35d3-4b89-9ffa-3892a0086549",
+			"timerStart": 1669115595497,
+			"timerStop": 1669115600611
+		},
+		{
+			"id": "689bce22-8539-4589-9464-84391c6459e4",
+			"userId": "99132727-8daa-4c50-ab7e-cae569a88c9f",
+			"projectId": "246d4fcd-85fe-4c1c-8315-3837bdaddd82",
+			"taskId": "a6bc7f38-e43a-4fb0-bb48-cce458e00c94",
+			"timerStart": 1669115635633,
+			"timerStop": 1669115640844
+		},
+		{
+			"id": "ccb5b8f8-b143-4f30-85eb-6be8eeb99332",
+			"userId": "115f62a6-3cc9-4cfc-a71b-b50fb54b6956",
+			"projectId": "402ad007-d4e8-4a42-9bb9-0c27ab7d5baf",
+			"taskId": "1cf49830-80e5-4df3-8490-2133d1111edf",
+			"timerStart": 1669115670003,
+			"timerStop": 1669115675626
+		},
+		{
+			"id": "20c44895-c3b0-42fb-b8af-de9bba694d4c",
+			"userId": "99132727-8daa-4c50-ab7e-cae569a88c9f",
+			"projectId": "246d4fcd-85fe-4c1c-8315-3837bdaddd82",
+			"taskId": "37a5d74d-ffcc-4278-93a8-6e0fa2d6a10d",
+			"timerStart": 1669118586619,
+			"timerStop": 1669118590901
+		}
+	],
+	"invoices": [
+		{
+			"id": "46204432-a8b3-42d2-868b-369bf5f98eab",
+			"status": "ej betald",
+			"due_date": 1671707744513,
+			"amount": 12.5,
+			"customer": "Marcus",
+			"create_date": 1669115744513
+		},
+		{
+			"id": "6ddc1de0-5bf7-4cab-b93a-8e8026d3de8e",
+			"status": "ej betald",
+			"due_date": 1671707765849,
+			"amount": 16.67,
+			"customer": "Sandy",
+			"create_date": 1669115765849
+		},
+		{
+			"id": "e57ecf1c-e9d3-4574-8059-6730dde50aab",
+			"status": "ej betald",
+			"due_date": 1671710129595,
+			"amount": 12.5,
+			"customer": "Marcus",
+			"create_date": 1669118129595
+		},
+		{
+			"id": "e3ad18a5-7f40-4a6a-bc43-0e7ef9398591",
+			"status": "ej betald",
+			"due_date": 1671710660690,
+			"amount": 375,
+			"customer": "Linda",
+			"create_date": 1669118660690
+		},
+		{
+			"id": "25bb5c61-c567-4f7c-ab50-af4d8c9e4ab1",
+			"status": "ej betald",
+			"due_date": 1671743933104,
+			"amount": 1.67,
+			"customer": "Sandy",
+			"create_date": 1669151933104
+		},
+		{
+			"id": "973626fa-cd76-45a6-b952-aa651ac203f7",
+			"status": "ej betald",
+			"due_date": 1671789372211,
+			"amount": 150,
+			"customer": "Marcus",
+			"create_date": 1669197372211
+		},
+		{
+			"id": "f9a47235-02cc-4b15-9fc0-7689de421401",
+			"status": "ej betald",
+			"due_date": 1671890430597,
+			"amount": 0.55,
+			"customer": "Marcus",
+			"create_date": 1669298430597
+		}
+	]
+}
