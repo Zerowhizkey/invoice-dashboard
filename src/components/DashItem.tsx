@@ -31,35 +31,36 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-type Props = { children: React.ReactNode; index: number; draggableId: string };
+type Props = {
+    children: React.ReactNode;
+    index: number;
+    draggableId: string;
+    show: boolean;
+};
 
-const DashItem = ({ children, index, draggableId }: Props) => {
+const DashItem = ({ children, index, draggableId, show }: Props) => {
     const { classes, cx } = useStyles();
-    const [show, setShow] = useState(false);
+    if (!show) return <></>;
     return (
         <Draggable index={index} draggableId={draggableId}>
             {(provided, snapshot) => (
-                <div
-                    className={cx(classes.item, {
-                        [classes.itemDragging]: snapshot.isDragging,
-                    })}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    ref={provided.innerRef}
-                >
-                    <Text className={classes.symbol}>{draggableId}</Text>
-                    <div>
-                        <button onClick={() => setShow(true)}>Show</button>
-                        <button onClick={() => setShow(false)}>Hide</button>
-                        {show ? (
+                <>
+                    <div
+                        className={cx(classes.item, {
+                            [classes.itemDragging]: snapshot.isDragging,
+                        })}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                    >
+                        <Text className={classes.symbol}>{draggableId}</Text>
+                        <div>
                             <Text color='dimmed' size='sm'>
                                 {children}
                             </Text>
-                        ) : (
-                            ''
-                        )}
+                        </div>
                     </div>
-                </div>
+                </>
             )}
         </Draggable>
     );

@@ -11,6 +11,25 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 dayjs.extend(isBetween);
 
+type TaskItem = {
+    id: string;
+    name: string;
+    time: number;
+    roundedTime: number;
+    selected: boolean;
+};
+
+const roundTime = (taskTimeMs: number, resolutionMinutes: number) => {
+    if (resolutionMinutes > 0) {
+        const roundedMinutes =
+            resolutionMinutes *
+            Math.ceil(taskTimeMs / (resolutionMinutes * 60 * 1000));
+        return dayjs.duration(roundedMinutes, 'minutes').asHours();
+    } else {
+        return dayjs.duration(taskTimeMs, 'milliseconds').asHours();
+    }
+};
+
 const InvoiceOverview = () => {
     const {
         users,
@@ -25,8 +44,7 @@ const InvoiceOverview = () => {
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedProject, setSelectedProject] = useState('');
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-    const [round, setRound] = useState('');
-    // const [totalTime, setTotalTime] = useState(0);
+    const [resolution, setResolution] = useState(0);
     const [price, setPrice] = useState(0);
 
     useEffect(() => {
@@ -60,47 +78,36 @@ const InvoiceOverview = () => {
 
     const custName = users.find((u) => u.id === selectedUser);
 
-    const totalCalcTime = useMemo(() => {
-        return timelogs
-            .filter((timelog) =>
-                selectedTasks.some((taskId) => taskId === timelog.taskId)
-            )
-            .map((timelog) =>
-                dayjs.duration(timelog.timerStop - timelog.timerStart).asHours()
-            )
-            .reduce((acc, sum) => acc + sum, 0);
-    }, [timelogs, selectedTasks]);
-
-    const roundTime = useMemo(() => {
-        if (!totalCalcTime) return 0;
-        // const remainder = totalCalcTime % 1;
-        // const fullHours = totalCalcTime - remainder;
-        // console.log(fullHours)
-        if (round === 'one-min') {
-            return 0.016;
-        }
-
-        if (round === 'five-min') {
-            return 0.083;
-        }
-        // if (round === 'fifteen-min') {
-        // }
-        // if (round === 'thirty-min') {
-        // }
-        if (round === 'sixty-min') {
-            return Math.ceil(totalCalcTime);
-        }
-        return totalCalcTime;
-    }, [totalCalcTime, round]);
+    const taskItems = useMemo(() => {
+        const result: TaskItem[] = [];
+        tasks
+            .filter((tasks) => tasks.projectId === selectedProject)
+            .forEach((task) => {
+                const taskTime = timelogs
+                    .filter((time) => time.taskId === task.id)
+                    .reduce((sum, curr) => {
+                        return sum + (curr.timerStop - curr.timerStart);
+                    }, 0);
+                result.push({
+                    id: task.id,
+                    name: task.title,
+                    time: taskTime,
+                    roundedTime: roundTime(taskTime, resolution),
+                    selected: selectedTasks.includes(task.id),
+                });
+            });
+        return result;
+    }, [tasks, timelogs, resolution, selectedTasks, selectedProject]);
 
     const total = useMemo(() => {
         const p = projects.find((p) => p.id === selectedProject);
         const hourlyRate = (p && p.hourly_rate) ?? 0;
+        const roundTime = taskItems
+            .filter((item) => item.selected)
+            .reduce((sum, curr) => sum + curr.roundedTime, 0);
         const calc = hourlyRate * roundTime;
         return Math.round(calc * 100) / 100;
-    }, [projects, selectedProject, roundTime]);
-
-    // 1 = 1h 0.5 = 30min 0.25 = 15min 0.083 = 5min 0.016 = 1min
+    }, [projects, selectedProject, taskItems]);
 
     const handleSelectedTasks = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
@@ -148,42 +155,6 @@ const InvoiceOverview = () => {
             </tr>
         ));
 
-    const tows = tasks
-        .filter((tasks) => tasks.projectId === selectedProject)
-        .map((task) => {
-            const project = projects.find(
-                (project) =>
-                    project.userId === selectedUser &&
-                    project.id === selectedProject
-            );
-            return (
-                <tr key={task.id}>
-                    <td>{task.title}</td>
-                    <td>{project?.hourly_rate}</td>
-                    <td>
-                        {dayjs(
-                            timelogs
-                                .filter((time) => time.taskId === task.id)
-                                .map((time) => time)
-                                .reduce((sum, curr) => {
-                                    return (
-                                        sum + (curr.timerStop - curr.timerStart)
-                                    );
-                                }, 0)
-                        )
-                            .subtract(1, 'hour')
-                            .format('HH:mm:ss')}
-                    </td>
-                    <td>
-                        <Checkbox
-                            value={task.id}
-                            onChange={handleSelectedTasks}
-                        />
-                    </td>
-                </tr>
-            );
-        });
-
     const handleDelete = (id: string) => {
         deleteInvoice(id);
     };
@@ -205,7 +176,17 @@ const InvoiceOverview = () => {
         ));
 
     const handleRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRound(e.target.value);
+        const num = parseInt(e.target.value);
+        if (
+            num === 0 ||
+            num === 1 ||
+            num === 5 ||
+            num === 15 ||
+            num === 30 ||
+            num === 60
+        ) {
+            setResolution(num);
+        }
     };
 
     return (
@@ -244,21 +225,35 @@ const InvoiceOverview = () => {
                     <thead>
                         <tr>
                             <th>Task</th>
-                            <th>Price per h</th>
                             <th>Current time</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {tows}
+                        {taskItems.map((task) => (
+                            <tr key={task.id}>
+                                <td>{task.name}</td>
+                                <td>
+                                    {dayjs(task.time)
+                                        .subtract(1, 'hour')
+                                        .format('HH:mm:ss')}
+                                </td>
+                                <td>
+                                    <Checkbox
+                                        value={task.id}
+                                        onChange={handleSelectedTasks}
+                                    />
+                                </td>
+                            </tr>
+                        ))}
                         <tr>
                             <td>
                                 <select onChange={handleRound}>
-                                    <option value='default'>Nada</option>
-                                    <option value='one-min'>1 min</option>
-                                    <option value='five-min'>5 min</option>
-                                    <option value='fifteen-min'>15 min</option>
-                                    <option value='thirty-min'>30 min</option>
-                                    <option value='sixty-min'>60 min</option>
+                                    <option value={0}>0</option>
+                                    <option value={1}>1 min</option>
+                                    <option value={5}>5 min</option>
+                                    <option value={15}>15 min</option>
+                                    <option value={30}>30 min</option>
+                                    <option value={60}>60 min</option>
                                 </select>
                             </td>
                             <td>
@@ -286,57 +281,3 @@ const InvoiceOverview = () => {
 };
 
 export default InvoiceOverview;
-// const chosenTask = selectedTasks.map((t) => {
-//     const invPrice: number = timelogs
-//         .filter((time) => time.taskId === t)
-//         .reduce<number>((prev, time) => {
-//             const t = dayjs
-//                 .duration(time.timerStop - time.timerStart)
-//                 .seconds();
-//             const p = projects.find((p) => p.id === time.projectId);
-//             const hourlyRate = (p && p.hourly_rate) ?? 0;
-
-//             const sum = (hourlyRate * t) / 60;
-//             console.log(t);
-//             return prev + sum;
-//         }, 0);
-//     return invPrice;
-// });
-// const total =
-//     Math.round(chosenTask.reduce((acc, sum) => acc + sum, 0) * 10) / 100;
-// const handleSelectedTasksRound = (
-//     e: React.ChangeEvent<HTMLInputElement>
-// ) => {
-//     if (e.target.checked) {
-//         setSelectedTasksRound((prev) => [...prev, e.target.value]);
-//     }
-//     if (!e.target.checked) {
-//         setSelectedTasksRound((tasks) =>
-//             tasks.filter((_, index) => index !== 0)
-//         );
-//     }
-// };
-
-// const chosenTaskRound = selectedTasksRound.map((t) => {
-//     const invPrice: number = timelogs
-//         .filter((time) => time.taskId === t)
-//         .reduce<number>((prev, time) => {
-//             const t = dayjs
-//                 .duration(time.timerStop - time.timerStart)
-//                 .asHours();
-//             const p = projects.find((p) => p.id === time.projectId);
-//             const hourlyRate = (p && p.hourly_rate) ?? 0;
-//             // if (t < 1) return (t = 1);
-//             const hour = t / 100;
-//             const sum = hourlyRate * hour * 10;
-//             console.log(t);
-//             console.log(hour);
-//             console.log(sum);
-//             return prev + sum;
-//         }, 0);
-//     return invPrice;
-// });
-
-// const totalRound =
-//     Math.round(chosenTaskRound.reduce((acc, sum) => acc + sum, 0) * 100) /
-//     100;
